@@ -10,7 +10,13 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.40",
-        "laravel/tinker": "^2.5"
+        "laravel/tinker": "^2.5",
+        "algolia/scout-extended": "^1.17",
+        "doctrine/dbal": "^3.1",
+        "laravel/scout": "^8.6",
+        "spatie/laravel-medialibrary": "^7.19"
+
+        
     },
     "require-dev": {
         "facade/ignition": "^2.5",

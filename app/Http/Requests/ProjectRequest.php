@@ -31,7 +31,8 @@ class ProjectRequest extends FormRequest
     public function rules()
     {
         $validation = [];
-        if( Route::currentRouteName() == ('create-project-stage-two-info' || 'edit-project-stage-two-info')){
+        if( Route::currentRouteName() == 'create-project-stage-two-info' || Route::currentRouteName() == 'edit-project-stage-two-info'){
+
             $validation = [
                 'title' => ['required'],
                 'category_id' => ['required', 'exists:categories,id'],

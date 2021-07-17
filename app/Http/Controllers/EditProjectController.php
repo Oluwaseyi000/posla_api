@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use Illuminate\Http\Request;
-use App\Http\Requests\Projects\CreateProjectRequest;
+use App\Http\Requests\ProjectRequest;
 
 class EditProjectController extends Controller
 {
-    public function stageTwoInfo(CreateProjectRequest $request, Project $project){
+    public function stageTwoInfo(ProjectRequest $request, Project $project){
 
         $data = $request->validated();    
         unset($data['pictures']);
@@ -24,10 +24,9 @@ class EditProjectController extends Controller
         return $this->successResponse($project->toArray(), 'Stage two of project updated successfully');
     }
 
-    public function stageThreePublish(CreateProjectRequest $request, Project $project){
+    public function stageThreePublish(ProjectRequest $request, Project $project){
         $project->boosted = $request->boosted;
         $project->save();
-
-        return $this->successResponse($project->toArray(), 'Project creation completed');
+        return $this->successResponse($project->toArray(), 'Project update completed');
     }
 }

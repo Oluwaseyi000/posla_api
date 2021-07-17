@@ -35,7 +35,7 @@ class Controller extends BaseController
     }
 
 
-    public function authUser(){
+    public function getAuthUser(){
         return auth()->user();
     }
 }

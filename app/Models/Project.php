@@ -13,6 +13,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Project extends Model implements HasMedia
 {
+    const ACTIVE=1;
+    const INACTIVE=0;
+
     use HasFactory, UsesUuid, HasMediaTrait,Searchable;
 
     protected $guarded = [];

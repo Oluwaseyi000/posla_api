@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Project;
 use App\Traits\UsesUuid;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,9 +35,9 @@ class Category extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function children(): HasMany
+    public function children()
     {
-        return $this->hasMany($this, 'parent_id', 'id');
+        return $this->hasMany($this, 'parent_id', 'id')->where('status', 1)->orderBy(DB::raw('ISNULL(position), position'), 'ASC')->orderBy('name', 'desc');
     }
 
     /**

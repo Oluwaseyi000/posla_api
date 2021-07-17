@@ -38,9 +38,9 @@ class AuthController extends Controller
             return $this->validationFailResponse('Invalid Login Credentials');
         }
 
-        $this->authUser()->token = $this->authUser()->createToken('authToken')->plainTextToken;
-        $this->authUser()->sendEmailVerificationNotification();
-        return $this->successResponse($this->authUser()->toArray(), 'signin successful');
+        $this->getAuthUser()->token = $this->getAuthUser()->createToken('authToken')->plainTextToken;
+        $this->getAuthUser()->sendEmailVerificationNotification();
+        return $this->successResponse($this->getAuthUser()->toArray(), 'signin successful');
     }
 
     public function verifyEmail(User $user, Request $request) {
@@ -57,11 +57,11 @@ class AuthController extends Controller
     }
     
     public function resendVerificationEmail() {
-        if ($this->authUser()->hasVerifiedEmail()) {
+        if ($this->getAuthUser()->hasVerifiedEmail()) {
             return $this->errorResponse('Email Already Verified');
         }
     
-        $this->authUser()->sendEmailVerificationNotification();
+        $this->getAuthUser()->sendEmailVerificationNotification();
         return $this->successResponse([], 'Email verification link sent on your email');
     }
 
@@ -83,10 +83,10 @@ class AuthController extends Controller
     }
 
     public function changePassword(ChangePasswordRequest $request){
-        if (!password_verify($request->old_password, $this->authUser()->password)) { 
+        if (!password_verify($request->old_password, $this->getAuthUser()->password)) { 
             return $this->validationFailResponse([], 'Old password does not match');
         } 
-        $this->authUser()->fill([
+        $this->getAuthUser()->fill([
          'password' => Hash::make($request->new_password)
          ])->save();
      
@@ -94,9 +94,7 @@ class AuthController extends Controller
     }
 
     public function logout(){
-        $this->authUser()->currentAccessToken()->delete();
+        $this->getAuthUser()->currentAccessToken()->delete();
         return $this->successResponse([], 'Logout Successful');
     }
-
-
 }

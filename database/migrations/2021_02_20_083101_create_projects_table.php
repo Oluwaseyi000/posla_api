@@ -15,11 +15,11 @@ class CreateProjectsTable extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id')->nullable();
+            $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->uuid('category_id')->nullable();
+            $table->uuid('category_id');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->uuid('subcategory_id')->nullable();
+            $table->uuid('subcategory_id');
             $table->foreign('subcategory_id')->references('id')->on('categories')->onDelete('cascade');
             $table->string('title');
             $table->float('budget', 10, 2);

@@ -30,6 +30,23 @@ Route::group(['prefix' => 'auth'], function(){
         Route::post('logout', 'AuthController@logout');
     });
 });
+
+    Route::group(['prefix' => 'projects', 'middleware' => 'auth:sanctum'], function (){
+        Route::group(['prefix' => 'create'], function (){
+            Route::post('stage-two-info', 'CreateProjectController@stageTwoInfo')->name('create-project-stage-two-info');
+            Route::post('stage-three-publish', 'CreateProjectController@stageThreePublish')->name('create-project-stage-three-publish');
+        });
+        Route::group(['prefix' => 'edit'], function (){
+            Route::post('stage-two-info/{project}', 'EditProjectController@stageTwoInfo')->name('edit-project-stage-two-info');
+            Route::post('stage-three-publish/{project}', 'EditProjectController@stageThreePublish')->name('edit-project-stage-three-publish');
+        });
+    });
+
+
+
+Route::get('category/main-categories', 'HelperController@mainCategories');
+Route::get('category/main-categories/{category}', 'HelperController@subCategory');
+
 Route::get('email/verify/{user}', 'AuthController@verifyEmail');
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {

@@ -8,19 +8,21 @@ use App\Models\DealFavourite;
 use Laravel\Scout\Searchable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
-use App\Notifications\VerifyEmailNotification;
+// use App\Notifications\VerifyEmailNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Notifications\SendPasswordResetNotification;
+// use App\Notifications\SendPasswordResetNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
+
 
 
 class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
     use HasFactory, Notifiable, Searchable;
-    use UsesUuid, HasMediaTrait;
+    use UsesUuid, HasMediaTrait, HasApiTokens;
 
     protected $fillable = [
         'name', 'username', 'phone', 'email', 'password', 'email_verified_at',
@@ -59,14 +61,14 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return empty($languages) ? []: json_decode($languages, true);
     }
 
-    public function sendPasswordResetNotification($token)
-    {
-        $this->notify(new sendPasswordResetNotification($token));
-    }
+    // public function sendPasswordResetNotification($token)
+    // {
+    //     $this->notify(new sendPasswordResetNotification($token));
+    // }
 
-    public function sendEmailVerificationNotification(){
-        $this->notify(new VerifyEmailNotification($this));
-    }
+    // public function sendEmailVerificationNotification(){
+    //     $this->notify(new VerifyEmailNotification($this));
+    // }
 
 
     public function deals(): HasMany

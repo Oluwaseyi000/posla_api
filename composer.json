@@ -6,17 +6,16 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "algolia/scout-extended": "^1.17",
+        "doctrine/dbal": "^3.1",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.40",
-        "laravel/tinker": "^2.5",
-        "algolia/scout-extended": "^1.17",
-        "doctrine/dbal": "^3.1",
+        "laravel/sanctum": "^2.11",
         "laravel/scout": "^8.6",
+        "laravel/tinker": "^2.5",
         "spatie/laravel-medialibrary": "^7.19"
-
-        
     },
     "require-dev": {
         "facade/ignition": "^2.5",

@@ -20,6 +20,9 @@ class Project extends Model implements HasMedia
 
     protected $guarded = [];
     protected $cast = ['active_until' => 'timestamp'];
+    protected $hidden = ['media', 'category'];
+    protected $appends = [ 'project_images', 'UserProfileImage' ];
+
 
     public function setTitleAttribute($value){
         $this->attributes['title'] = ucwords($value);
@@ -56,7 +59,7 @@ class Project extends Model implements HasMedia
     */
    public function owner(): BelongsTo
    {
-       return $this->belongsTo(User::class, 'user_id');
+       return $this->belongsTo(User::class,'user_id', 'id');
    }
 
     public function toSearchableArray(){
@@ -71,6 +74,24 @@ class Project extends Model implements HasMedia
         $array['subcategory'] = $this->subCategory->name ?? 'error';
 
         return $array;
+    }
+
+    public function getProjectImagesAttribute()
+    {
+        $data = [];
+        foreach ($this->getMedia() as $media) {
+            $data[] =  $media->getFullUrl();
+            
+        }
+        return $data;
+    }
+
+    public function getUserProfileImageAttribute()
+    {
+        // return $this->owner->id;
+        // return $medias = $this->owner();
+        // return $medias->getFirstMediaUrl();
+      
     }
 
 

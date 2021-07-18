@@ -21,7 +21,7 @@ class CreateFreelancersTable extends Migration
             $table->decimal('rating');
             $table->string('status');
             $table->string('short_description');
-            $table->text('long_description');
+            $table->text('full_description');
             $table->timestamps();
         });
     }

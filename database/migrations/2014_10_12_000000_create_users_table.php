@@ -26,7 +26,11 @@ class CreateUsersTable extends Migration
             $table->text('languages')->nullable()->comment("stringify all language into one");
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->boolean('status')->default(0);
+            $table->boolean('status')->default(1);
+            $table->text('skillsets');
+            $table->decimal('rating');
+            $table->string('short_description');
+            $table->text('full_description');
             $table->rememberToken();
             $table->timestamps();
         });

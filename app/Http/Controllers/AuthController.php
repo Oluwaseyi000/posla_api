@@ -97,4 +97,15 @@ class AuthController extends Controller
         $this->getAuthUser()->currentAccessToken()->delete();
         return $this->successResponse([], 'Logout Successful');
     }
+
+    public function editProfile(Request $request){
+        $user = $this->getAuthUser();
+        $user->fill($request->all());
+        $user->save();
+        if($request->has('profile')){
+            $user->addMediaFromRequest('profile')->toMediaCollection('profile');
+        }
+        return $this->successResponse($user->toArray());  
+    }
 }
+

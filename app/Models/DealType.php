@@ -14,9 +14,9 @@ class DealType extends Model
 
     protected $guarded = [];
 
-    protected $with = ['deal'];
+    protected $hidden = ['position'];
 
-    // protected $fillable = ['user_id', 'category_id', 'subcategory_id', 'title','description','tags', 'boosted','status'];
+    protected $fillable = ['deal_id', 'type', 'name','description', 'delivery_timeframe','revision_num', 'price', 'status'];
     
     public $timestamps = false;
 

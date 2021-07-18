@@ -28,19 +28,59 @@ Route::group(['prefix' => 'auth'], function(){
         Route::post('change-password', 'AuthController@changePassword');
         Route::post('resend-verification-email', 'AuthController@resendVerificationEmail');
         Route::post('logout', 'AuthController@logout');
+        Route::post('profile/update', 'AuthController@editProfile');
     });
 });
 
-    Route::group(['prefix' => 'projects', 'middleware' => 'auth:sanctum'], function (){
+Route::group(['middleware' => 'auth:sanctum'], function (){
+    Route::group(['prefix' => 'projects'], function (){
         Route::group(['prefix' => 'create'], function (){
-            Route::post('stage-two-info', 'CreateProjectController@stageTwoInfo')->name('create-project-stage-two-info');
-            Route::post('stage-three-publish', 'CreateProjectController@stageThreePublish')->name('create-project-stage-three-publish');
+            Route::post('stage-two-info', 'ProjectController@stageTwoInfo')->name('create-project-stage-two-info');
+            Route::post('stage-three-publish', 'ProjectController@stageThreePublish')->name('create-project-stage-three-publish');
         });
         Route::group(['prefix' => 'edit'], function (){
-            Route::post('stage-two-info/{project}', 'EditProjectController@stageTwoInfo')->name('edit-project-stage-two-info');
-            Route::post('stage-three-publish/{project}', 'EditProjectController@stageThreePublish')->name('edit-project-stage-three-publish');
+            Route::post('stage-two-info/{project}', 'ProjectController@stageTwoInfoEdit')->name('edit-project-stage-two-info');
+            Route::post('stage-three-publish/{project}', 'ProjectController@stageThreePublishEdit')->name('edit-project-stage-three-publish');
         });
     });
+
+    Route::group(['prefix' => 'deals'], function (){
+        Route::group(['prefix' => 'create'], function (){
+            Route::post('stage-two-info', 'DealController@stageTwoInfo')->name('create-deal-stage-two-info');
+            Route::post('stage-three-price/{deal}', 'DealController@stageThreePrice')->name('create-deal-stage-three-price');
+            Route::post('stage-four-requirements/{deal}', 'DealController@stageFourRequirement')->name('create-deal-stage-four-requirement');
+            Route::post('stage-five-publish/{deal}', 'DealController@stageFivePublish')->name('create-deal-stage-five-publish');
+        });
+        Route::group(['prefix' => 'edit'], function (){
+            Route::post('stage-two-info/{deal}', 'DealController@stageTwoInfoEdit')->name('edit-deal-stage-two-info');
+            Route::post('stage-three-price/{deal}', 'DealController@stageThreePriceEdit')->name('edit-deal-stage-three-price');
+            Route::post('stage-four-requirements/{deal}', 'DealController@stageFourRequirementEdit')->name('edit-deal-stage-four-requirement');
+            Route::post('stage-five-publish/{deal}', 'DealController@stageFivePublishEdit')->name('edit-deal-stage-five-publish');
+        });
+        Route::get('/', 'DealController@allDeal');
+        Route::get('{deal}/deal_types', 'DealController@getDealTypes');
+        Route::get('{deal}/deal_requirements', 'DealController@getDealRequirements');
+    });
+
+    Route::group(['prefix' => 'account'], function (){
+        Route::get('deals', 'AccountController@myDeals');
+        Route::get('projects', 'AccountController@myProjects');
+        Route::get('profile', 'AccountController@myProfile');
+        Route::get('orders', 'AccountController@myProfile');
+        Route::get('project-bids', 'AccountController@myProjectBids');
+        Route::get('dashboard', 'AccountController@dashboard');
+    });
+    
+});
+
+Route::group(['prefix' => 'front'], function (){
+    Route::get('projects', 'FrontController@allProjects');
+    Route::get('projects/{project}', 'FrontController@singleProject');
+    Route::get('deals', 'FrontController@allDeals');
+    Route::get('deals/{deal}', 'FrontController@singleDeal');
+    Route::get('categories/{category}/projects', 'FrontController@categoryProjects');
+    Route::get('categories/{category}/deals', 'FrontController@categoryProjects');
+});
 
 
 

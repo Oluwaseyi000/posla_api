@@ -17,8 +17,10 @@ class Deal extends Model implements HasMedia
     use HasFactory, UsesUuid, HasMediaTrait, Searchable;
 
     protected $fillable = ['user_id', 'category_id', 'subcategory_id', 'title','description','tags', 'boosted','status', 'action'];
-
-    protected $with = ['owner'];
+    
+    protected $hidden = ['media'];
+    
+    protected $appends = [ 'deal_images'];
     /**
      * Get all of the types for the Deal
      *
@@ -26,7 +28,7 @@ class Deal extends Model implements HasMedia
      */
     public function types(): HasMany
     {
-        return $this->hasMany(DealType::class)->orderBy('position');
+        return $this->hasMany(DealType::class);
     
     }
 
@@ -119,6 +121,23 @@ class Deal extends Model implements HasMedia
         $array['subcategory'] = $this->subCategory->name;
 
         return $array;
+    }
+
+    public function getDealImagesAttribute()
+    {
+        $data = [];
+        foreach ($this->getMedia() as $media) {
+            $data[] =  $media->getFullUrl();
+            
+        }
+        return $data;
+    }
+
+    public function sellerOtherDeals(){
+        return Deal::where('user_id', $this->user_id)->where('id', '!=', $this->id)->get();
+    }
+    public function categoryOtherDeals(){
+        return Deal::where('category_id', $this->category_id)->where('id', '!=', $this->id)->get();
     }
 
 }

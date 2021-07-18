@@ -28,7 +28,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'name', 'username', 'phone', 'email', 'password', 'email_verified_at',
         'pid', 'country_id', 'gender', 'dob', 'language', 
         'status', 'registration_completed','short_description', 
-        'long_description', 'skillset', 'languages'
+        'full_description', 'skillsets', 'languages'
 
     ];
 
@@ -45,11 +45,11 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'languages' => 'array'
     ];
 
-    public function setSkillsetAttribute($skillset){
-        $this->attributes['skillset'] = \implode($skillset, ',');
+    public function setSkillsetsAttribute($skillset){
+        $this->attributes['skillsets'] = implode($skillset, ',');
     }
 
-    public function getSkillsetAttribute($skillset){
+    public function getSkillsetsAttribute($skillset){
        return empty($skillset) ? [] : explode(',', $skillset);
     }
 
@@ -73,17 +73,26 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
 
     public function deals(): HasMany
     {
-        return $this->hasMany(Deal::class)->orderBy('created_at','desc');
+        return $this->hasMany(Deal::class);
+    }
+    public function activeDeals(): HasMany
+    {
+        return $this->deals()->where('status', true);
     }
 
     public function dealFavourites(): HasMany
     {
-        return $this->hasMany(DealFavourite::class)->orderBy('created_at','desc');
+        return $this->hasMany(DealFavourite::class);
     }
 
     public function projects(): HasMany
     {
         return $this->hasMany(Project::class);
+    }
+
+    public function activeProjects(): HasMany
+    {
+        return $this->projects()->where('status', true);
     }
 
     public function registerMediaCollections(): void
@@ -95,5 +104,11 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
 
     public function isFavouriteDeal($deal_id){
         return in_array($deal_id, $this->dealFavourites->pluck('id')->toArray());
+    }
+
+    public function getUserProfileImageAttribute()
+    {
+        return  auth()->user()->getMedia();
+      
     }
 }

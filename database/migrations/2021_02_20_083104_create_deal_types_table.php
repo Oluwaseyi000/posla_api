@@ -24,7 +24,7 @@ class CreateDealTypesTable extends Migration
             $table->integer('delivery_timeframe')->comment("in days");
             $table->integer('revision_num');
             $table->float('price', 10, 2);
-            $table->boolean('status')->default(0);
+            $table->boolean('status')->default(1);
 
         });
     }

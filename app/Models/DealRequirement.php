@@ -14,4 +14,6 @@ class DealRequirement extends Model
 
     public $timestamps = false;
 
+    protected $fillable = ['deal_id','input_type', 'question', 'options'];
+
 }

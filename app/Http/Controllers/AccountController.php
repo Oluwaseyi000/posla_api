@@ -37,7 +37,23 @@ class AccountController extends Controller
             ->where('user.id', $this->getAuthUser()->id)
             ->with('activeDeals', 'activeProjects')->get();
 
-        return $this->successResponse($data->toArray(), 'only active deals and active project');  
+        return $this->successResponse($data->toArray());  
+    }
+
+    public function vacation(){
+        $user = $this->getAuthUser();
+        if($user->status == User::ACTIVE){
+            $user->status = User::VACATION;
+            $message = 'Vacation mode activated, enjoy your vacation';
+
+        }elseif($user->status == User::VACATION){
+            $user->status = User::ACTIVE;
+            $message = 'Vacation mode deactivated';
+        }
+
+        $user->save();
+
+        return $this->successResponse(['status' => $user->status], 'same endpoint for vacation and off-vacation', $message);  
     }
 
    

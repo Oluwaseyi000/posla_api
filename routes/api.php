@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth:sanctum'], function (){
         Route::get('orders', 'AccountController@myProfile');
         Route::get('project-bids', 'AccountController@myProjectBids');
         Route::get('dashboard', 'AccountController@dashboard');
+        Route::post('settings/vacation', 'AccountController@vacation');
     });
     
 });

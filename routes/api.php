@@ -27,8 +27,8 @@ Route::group(['prefix' => 'auth'], function(){
     Route::group(['middleware' => 'auth:sanctum'], function(){
         Route::post('change-password', 'AuthController@changePassword');
         Route::post('resend-verification-email', 'AuthController@resendVerificationEmail');
-        Route::post('logout', 'AuthController@logout');
         Route::post('profile/update', 'AuthController@editProfile');
+        Route::post('logout', 'AuthController@logout');
     });
 });
 
@@ -67,9 +67,28 @@ Route::group(['middleware' => 'auth:sanctum'], function (){
         Route::get('projects', 'AccountController@myProjects');
         Route::get('profile', 'AccountController@myProfile');
         Route::get('orders', 'AccountController@myProfile');
+        Route::get('favourites', 'AccountController@myFavourites');
         Route::get('project-bids', 'AccountController@myProjectBids');
         Route::get('dashboard', 'AccountController@dashboard');
         Route::post('settings/vacation', 'AccountController@vacation');
+    });
+
+      // favourites
+      Route::group(['prefix' => 'favourites', 'as' => 'favourite.'], function(){
+        Route::post('add-remove-deal', 'FavouriteController@addDeal')->name('add.deal');
+        Route::post('add-remove-project', 'FavouriteController@addProject')->name('add.project');
+    });
+
+    // proposals
+    Route::group(['prefix' => 'proposals'], function (){
+        Route::post('bid', 'ProposalController@bid')->name('proposal.bid');
+        Route::post('withdraw', 'ProposalController@withdraw')->name('proposal.withdraw');
+    });
+
+    // carts
+    Route::group(['prefix' => 'cart'], function (){
+        Route::post('payment/paystack', 'CartController@paymentPaystack')->name('payment.paystack');
+        // Route::post('withdraw', 'ProposalController@withdraw')->name('proposal.withdraw');
     });
     
 });

@@ -20,23 +20,23 @@ class DealController extends Controller
             ->each(function ($fileAdder) {
                 $fileAdder->toMediaCollection();
             });
-        return $this->successResponse($deal->toArray(), 'Stage two (info) of deal created successfully');
+        return $this->successResponse($deal, 'Stage two (info) of deal created successfully');
     }
 
     public function stageThreePrice(DealRequest $request, Deal $deal){
         $deal->types()->createMany($request->types);
-        return $this->successResponse($deal->types->toArray(), 'Stage three (price) of project created successfully');
+        return $this->successResponse($deal->types, 'Stage three (price) of project created successfully');
     }
 
     public function stageFourRequirement(DealRequest $request, Deal $deal){
         $deal->requirements()->createMany($request->questions);
-        return $this->successResponse($deal->requirements->toArray(), 'Stage four (requirements) of project created successfully');
+        return $this->successResponse($deal->requirements, 'Stage four (requirements) of project created successfully');
     }
 
     public function stageFivePublish(DealRequest $request, Deal $deal){
         $deal->action = 'completed';
         $deal->save();
-        return $this->successResponse($deal->toArray(), 'Deal creation completed');
+        return $this->successResponse($deal, 'Deal creation completed');
     }
 
     public function stageTwoInfoEdit(DealRequest $request, Deal $deal){
@@ -50,14 +50,14 @@ class DealController extends Controller
                 $fileAdder->toMediaCollection();
             });
         }
-        return $this->successResponse($deal->toArray(), 'Stage two (info) of deal updated successfully');
+        return $this->successResponse($deal, 'Stage two (info) of deal updated successfully');
     }
 
     public function stageThreePriceEdit(DealRequest $request, Deal $deal){
         // return $deal->types()->getRelatedIds();
         return $deal->types;
         $deal->types()->createMany($request->types);
-        return $this->successResponse($deal->types->toArray(), 'Stage three (price) of project created successfully');
+        return $this->successResponse($deal->types, 'Stage three (price) of project created successfully');
     }
 
     public function getDealTypes(Deal $deal){

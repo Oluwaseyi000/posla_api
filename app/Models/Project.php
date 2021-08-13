@@ -13,15 +13,29 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Project extends Model implements HasMedia
 {
-    const ACTIVE=1;
-    const INACTIVE=0;
-
     use HasFactory, UsesUuid, HasMediaTrait,Searchable;
+    
+    const CLOSE = 0;
+    const OPEN = 1;
+    const INPROGRESS = 2;
+    const COMPLETED = 3;
+    const ABANDONED = 4;
+
 
     protected $guarded = [];
     protected $cast = ['active_until' => 'timestamp'];
     protected $hidden = ['media', 'category'];
-    protected $appends = [ 'project_images', 'UserProfileImage' ];
+    protected $appends = [ 'status_display','project_images', 'UserProfileImage' ,'is_favourite'];
+
+    protected function statusDisplay(){
+        return  [
+            $this::CLOSE => 'closed',
+            $this::OPEN => 'open',
+            $this::INPROGRESS => 'in_progress',
+            $this::COMPLETED => 'completed',
+            $this::ABANDONED => 'abandon',
+        ];
+    } 
 
 
     public function setTitleAttribute($value){
@@ -63,7 +77,7 @@ class Project extends Model implements HasMedia
    }
 
     public function toSearchableArray(){
-        $array = $this->toArray();
+        $array = $this;
 
         // Applies Scout Extended default transformations:
         $array = $this->transform($array);
@@ -92,6 +106,25 @@ class Project extends Model implements HasMedia
         // return $medias = $this->owner();
         // return $medias->getFirstMediaUrl();
       
+    }
+
+    public function getIsFavouriteAttribute(){
+        if(!auth()->check()){
+            return false;
+        }
+        return ProjectFavourite::where(['user_id' => auth()->user()->id, 'project_id' => $this->id])->exists();
+    }
+
+    public function getStatusDisplayAttribute(){
+        return  $this->statusDisplay()[$this->status];
+    }
+
+    public function getServiceFeeAndVatAttribute(){
+        return $this->price * 20/100;
+    }
+
+    public function getTotalAttribute(){
+        return $this->price + $this->serviceFeeAndVat;
     }
 
 

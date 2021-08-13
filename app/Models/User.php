@@ -79,6 +79,12 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     {
         return $this->hasMany(Deal::class);
     }
+    
+    public function proposals(): HasMany
+    {
+        return $this->hasMany(Proposal::class)->with('project');
+    }
+
     public function activeDeals(): HasMany
     {
         return $this->deals()->where('status', true);
@@ -87,6 +93,11 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     public function dealFavourites(): HasMany
     {
         return $this->hasMany(DealFavourite::class);
+    }
+
+    public function projectFavourites(): HasMany
+    {
+        return $this->hasMany(ProjectFavourite::class);
     }
 
     public function projects(): HasMany
@@ -107,7 +118,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     }
 
     public function isFavouriteDeal($deal_id){
-        return in_array($deal_id, $this->dealFavourites->pluck('id')->toArray());
+        return in_array($deal_id, $this->dealFavourites->pluck('id'));
     }
 
     public function getUserProfileImageAttribute()

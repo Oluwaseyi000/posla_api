@@ -11,17 +11,19 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function successResponse(array $data, $comment = '', $message = 'successful', $status = true){
-        return response([
+    public function successResponse($data, $comment = null, $message = 'successful', $status = true){
+        $response = [
             'status' => $status,
-            'data' => $data,
-            'message' => $message,
-            'comment' => $comment,
-        ]);
+            'message' => $message 
+        ];
+        $response = $data ? array_merge($response, ['data' => $data]) : $response;
+        $response = $comment ? array_merge($response, ['comment' => $comment]) : $response;
+        return response()->json($response);
+    
     } 
 
     public function validationFailResponse($errors, $message = 'an error occurred', $status = false){
-        return response([
+        return response()->json([
             'status' => $status,
             'error' => $errors,
             'message' => $message 

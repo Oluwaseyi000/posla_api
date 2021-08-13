@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Project;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -27,7 +28,7 @@ class CreateProjectsTable extends Migration
             $table->text('tags')->nullable()->comment("separated by comma,");
             $table->integer('timeframe');
             $table->boolean('boosted')->nullable();
-            $table->boolean('status');
+            $table->boolean('status')->default(Project::OPEN);
             $table->string('action')->comment('show if its edit, disable by admin, creation complete etc');
             $table->timestamp('active_until')->nullable();
             $table->timestamps();

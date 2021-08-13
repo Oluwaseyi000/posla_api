@@ -22,7 +22,7 @@ class ProjectController extends Controller
             $fileAdder->toMediaCollection();
         });
         
-        return $this->successResponse($project->toArray(), 'Stage two (info) of project created successfully');
+        return $this->successResponse($project, 'Stage two (info) of project created successfully');
     }
 
     public function stageThreePublish(ProjectRequest $request){
@@ -31,7 +31,7 @@ class ProjectController extends Controller
         $project->action = 'completed';
         $project->save();
 
-        return $this->successResponse($project->toArray(), 'Project creation completed');
+        return $this->successResponse($project, 'Project creation completed');
     }
 
     public function stageTwoInfoEdit(ProjectRequest $request, Project $project){
@@ -47,12 +47,12 @@ class ProjectController extends Controller
             });
         }
         
-        return $this->successResponse($project->toArray(), 'Stage two of project updated successfully');
+        return $this->successResponse($project, 'Stage two of project updated successfully');
     }
 
     public function stageThreePublishEdit(ProjectRequest $request, Project $project){
         $project->boosted = $request->boosted;
         $project->save();
-        return $this->successResponse($project->toArray(), 'Project update completed');
+        return $this->successResponse($project, 'Project update completed');
     }
 }

@@ -20,7 +20,7 @@ class Deal extends Model implements HasMedia
     
     protected $hidden = ['media'];
     
-    protected $appends = [ 'deal_images'];
+    protected $appends = ['deal_images', 'is_favourite'];
     /**
      * Get all of the types for the Deal
      *
@@ -110,7 +110,7 @@ class Deal extends Model implements HasMedia
    }
 
     public function toSearchableArray(){
-        $array = $this->toArray();
+        $array = $this;
 
         // Applies Scout Extended default transformations:
         $array = $this->transform($array);
@@ -136,8 +136,18 @@ class Deal extends Model implements HasMedia
     public function sellerOtherDeals(){
         return Deal::where('user_id', $this->user_id)->where('id', '!=', $this->id)->get();
     }
+
     public function categoryOtherDeals(){
         return Deal::where('category_id', $this->category_id)->where('id', '!=', $this->id)->get();
+    }
+
+    public function getIsFavouriteAttribute(){
+        $isFavourite = false;
+        if(auth()->check()){
+             $isFavourite = DealFavourite::where(['user_id' => auth()->user()->id, 'deal_id' => $this->id])->exists();
+        }
+
+        return $isFavourite;
     }
 
 }

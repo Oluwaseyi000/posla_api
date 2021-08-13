@@ -16,10 +16,12 @@ class CreateProposalTable extends Migration
         Schema::create('proposals', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('project_id');
-            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');;
-            $table->uuid('freelancer_id');
-            $table->foreign('freelancer_id')->references('id')->on('freelancers');
-            $table->float('bid_amount', 10, 2);
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
+            $table->uuid('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->text('comment')->nullable();
+            $table->float('amount', 10, 2);
+            $table->float('deposit', 10, 2)->nullable();
             $table->integer('status');
             $table->timestamps();
         });

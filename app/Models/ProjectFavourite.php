@@ -9,4 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 class ProjectFavourite extends Model
 {
     use HasFactory, UsesUuid;
+    
+    protected $fillable = ['user_id', 'project_id'];
 }

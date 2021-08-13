@@ -26,7 +26,7 @@ class AuthController extends Controller
             $user['token'] = $user->createToken('auth_token')->plainTextToken;
             DB::commit();
 
-            return $this->successResponse($user->toArray());
+            return $this->successResponse($user);
         } catch (\Throwable $th) {
             DB::rollBack();
             return $this->errorResponse();
@@ -37,10 +37,9 @@ class AuthController extends Controller
         if (!auth()->attempt($request->validated())) {
             return $this->validationFailResponse('Invalid Login Credentials');
         }
-
         $this->getAuthUser()->token = $this->getAuthUser()->createToken('authToken')->plainTextToken;
         $this->getAuthUser()->sendEmailVerificationNotification();
-        return $this->successResponse($this->getAuthUser()->toArray(), 'signin successful');
+        return $this->successResponse($this->getAuthUser());
     }
 
     public function verifyEmail(User $user, Request $request) {
@@ -94,7 +93,7 @@ class AuthController extends Controller
     }
 
     public function logout(){
-        $this->getAuthUser()->currentAccessToken()->delete();
+        $this->getAuthUser()->tokens()->delete();
         return $this->successResponse([], 'Logout Successful');
     }
 
@@ -105,7 +104,7 @@ class AuthController extends Controller
         if($request->has('profile')){
             $user->addMediaFromRequest('profile')->toMediaCollection('profile');
         }
-        return $this->successResponse($user->toArray());  
+        return $this->successResponse($user);  
     }
 }
 

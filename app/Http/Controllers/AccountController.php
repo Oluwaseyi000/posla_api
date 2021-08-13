@@ -2,34 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Proposal;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    public function myDeals(){
-        $myDeals =  $this->getAuthUser()->deals->toArray();
+    public function myDeals(Request $request){
+        $myDeals =  $this->getAuthUser()->deals;
         return $this->successResponse($myDeals);
     }
    
     public function myProjects(){
-        $myProjects =  $this->getAuthUser()->projects->toArray();
+        $myProjects =  $this->getAuthUser()->projects;
         return $this->successResponse($myProjects);
     }
 
     public function myProfile(){
         $myProfile =  $this->getAuthUser();
-        return $this->successResponse($myProfile->toArray());
+        return $this->successResponse($myProfile);
     }
 
     public function myOrders(){
         $myOrders =  $this->getAuthUser();
-        return $this->successResponse($myOrders->toArray());
+        return $this->successResponse($myOrders);
+    }
+    public function myFavourites(){
+        $myFavourites =  User::where('id', $this->getAuthUser()->id)->with(['dealFavourites', 'projectFavourites'])->select(['id'])->get();
+        return $this->successResponse($myFavourites);
     }
 
     public function myProjectBids(){
-        $myOrders =  $this->getAuthUser();
-        return $this->successResponse($myOrders->toArray());
+        $myProposals =  $this->getAuthUser()->proposals;
+        return $this->successResponse($myProposals);
     }
 
     public function dashboard(){
@@ -37,7 +42,7 @@ class AccountController extends Controller
             ->where('user.id', $this->getAuthUser()->id)
             ->with('activeDeals', 'activeProjects')->get();
 
-        return $this->successResponse($data->toArray());  
+        return $this->successResponse($data);  
     }
 
     public function vacation(){
@@ -50,19 +55,7 @@ class AccountController extends Controller
             $user->status = User::ACTIVE;
             $message = 'Vacation mode deactivated';
         }
-
         $user->save();
-
         return $this->successResponse(['status' => $user->status], 'same endpoint for vacation and off-vacation', $message);  
     }
-
-   
-
-//     public function categoryDeals(Category $category){
-//         $category = Category::from('categories as category' )
-//             ->where('category.id', $category->id)
-//             ->with('deals', 'children')->get();
-
-//         return $this->successResponse($category->toArray());  
-//     }
 }

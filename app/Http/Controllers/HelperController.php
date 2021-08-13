@@ -10,10 +10,10 @@ class HelperController extends Controller
 {
     public function mainCategories(){
         $categories = Category::whereHas('children')->where('status', true)->orderBy(DB::raw('ISNULL(position), position'), 'ASC')->orderBy('name', 'desc')->get();
-        return $this->successResponse($categories->toArray(), 'Active categories');
+        return $this->successResponse($categories, 'Active categories');
     }
 
     public function subCategory(Category $category){
-        return $this->successResponse($category->children->toArray(), 'sub categories');
+        return $this->successResponse($category->children, 'sub categories');
     }
 }

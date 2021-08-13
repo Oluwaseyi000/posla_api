@@ -16,7 +16,7 @@ class FrontController extends Controller
             ->select(['project.id', 'title', 'budget', 'project.description', 'tags', 'boosted', 'category.id as category_id', 'category.name as category_name', 'project.created_at'])
             ->get()
             ->groupBy('category.name');
-        return $this->successResponse($projects->toArray(), 'Projects are grouped by category');
+        return $this->successResponse($projects, 'Projects are grouped by category');
     }
 
     public function singleProject(Project $project){
@@ -28,7 +28,7 @@ class FrontController extends Controller
             
             ->select([
                 // 'media.*',
-                'project.id', 'title', 'budget', 'project.description', 'tags', 'boosted', 'project.created_at',
+                'project.id', 'title', 'budget', 'project.description', 'tags', 'boosted', 'project.status', 'project.created_at',
                 'category.id as category_id', 'category.name as category_name',
                 'subcategory.id as subcategory_id', 'subcategory.name as subcategory_name',
                 'user.name as user_name', 'user.id as user_id', 'user.created_at as member_since', 'user.gender as user_gender', 
@@ -39,12 +39,12 @@ class FrontController extends Controller
             ->get();
             
 
-        return $this->successResponse($project->toArray());
+        return $this->successResponse($project);
     }
 
     public function featuredProjects(){
         $feature_projects = Project::where(['boosted' =>true, 'status'=> true])->inRandomOrder()->limit(3)->get();
-        return $this->successResponse($feature_projects->toArray(), 'Featured project limit to 3 ');
+        return $this->successResponse($feature_projects, 'Featured project limit to 3 ');
     }
 
     public function allDeals(){
@@ -54,7 +54,7 @@ class FrontController extends Controller
             ->select(['deal.id', 'deal.description', 'tags', 'boosted', 'category.id as category_id', 'category.name as category_name', 'user.name as user_name', 'deal.created_at'])
             ->get()
             ->groupBy('category.name');
-        return $this->successResponse($deals->toArray(), 'Deals are grouped by category');
+        return $this->successResponse($deals, 'Deals are grouped by category');
     }
 
     public function singleDeal(Deal $deal){
@@ -74,7 +74,7 @@ class FrontController extends Controller
             $data['seller_other_deals'] =  $deal->sellerOtherDeals();
             $data['category_other_deals'] =  $deal->categoryOtherDeals();
 
-        return $this->successResponse($data->toArray());
+        return $this->successResponse($data);
     }
 
     public function categoryProjects(Category $category){
@@ -82,7 +82,7 @@ class FrontController extends Controller
             ->where('category.id', $category->id)
             ->with('projects', 'children')->get();
 
-        return $this->successResponse($category->toArray());  
+        return $this->successResponse($category);  
     
     }
     public function categoryDeals(Category $category){
@@ -90,7 +90,7 @@ class FrontController extends Controller
             ->where('category.id', $category->id)
             ->with('deals', 'children')->get();
 
-        return $this->successResponse($category->toArray());  
+        return $this->successResponse($category);  
     }
     
 
@@ -99,6 +99,6 @@ class FrontController extends Controller
         $categories_deals = Deal::where(['status'=> true])->get()->groupBy('category_id', true);
         // $latest_projects =  Project::where(['status'=> true])->inRandomOrder()->limit(2)->get();
 
-        return $this->successResponse($categories_deals->toArray(), 'Deals are grouped by category');
+        return $this->successResponse($categories_deals, 'Deals are grouped by category');
     }
 }

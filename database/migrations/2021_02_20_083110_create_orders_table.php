@@ -15,17 +15,20 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->uuid('deal_id')->nullable();
-            $table->foreign('deal_id')->references('id')->on('deals');
+            $table->uuid('owner_id');
+            $table->foreign('owner_id')->references('id')->on('users');
+            $table->uuid('freelancer_id');
+            $table->foreign('freelancer_id')->references('id')->on('users');
+            $table->uuid('type');
+            // $table->string('type_id');
+            $table->text('type_data');
             $table->double('reference_number')->comment("10 number auto generated");
-            $table->decimal('deal_price');
+            $table->decimal('price');
             $table->decimal('service_charge');
             $table->integer('delivery_time');
-            $table->string('payment_option')->nullable();
+            $table->integer('revision_remaining');
             $table->integer('quantity');
-            $table->float('total_deal_price',10, 2);
+            $table->float('total_price',10, 2);
             $table->float('total_paid', 10, 2);
             $table->timestamp('project_starts_on')->nullable();
             $table->timestamp('project_estimated_completion')->nullable();

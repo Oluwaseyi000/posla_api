@@ -30,8 +30,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
 
     protected $fillable = [
         'name', 'username', 'phone', 'email', 'password', 'email_verified_at',
-        'pid', 'country_id', 'gender', 'dob', 'language', 
-        'status', 'registration_completed','short_description', 
+        'pid', 'country_id', 'gender', 'dob', 'language',
+        'status', 'registration_completed','short_description',
         'full_description', 'skillsets', 'languages'
 
     ];
@@ -79,7 +79,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     {
         return $this->hasMany(Deal::class);
     }
-    
+
     public function proposals(): HasMany
     {
         return $this->hasMany(Proposal::class)->with('project');
@@ -124,6 +124,11 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     public function getUserProfileImageAttribute()
     {
         return  auth()->user()->getMedia();
-      
+
+    }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(ChatMessage::class);
     }
 }

@@ -15,6 +15,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/scout": "^8.6",
         "laravel/tinker": "^2.5",
+        "pusher/pusher-php-server": "^7.0",
         "spatie/laravel-medialibrary": "^7.19"
     },
     "require-dev": {

@@ -25,7 +25,7 @@ class AuthController extends Controller
 
             $user['token'] = $user->createToken('auth_token')->plainTextToken;
             DB::commit();
-
+            $this->getAuthUser()->sendEmailVerificationNotification();
             return $this->successResponse($user);
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -38,28 +38,28 @@ class AuthController extends Controller
             return $this->validationFailResponse('Invalid Login Credentials');
         }
         $this->getAuthUser()->token = $this->getAuthUser()->createToken('authToken')->plainTextToken;
-        $this->getAuthUser()->sendEmailVerificationNotification();
         return $this->successResponse($this->getAuthUser());
     }
 
     public function verifyEmail(User $user, Request $request) {
+        return 1;
         if (!$request->hasValidSignature()) {
             return $this->errorResponse('Invalid/Expired url provided');
         }
-    
+
         if ($user->hasVerifiedEmail()) {
             return $this->errorResponse('Email Already Verified');
         }
-        
+
         $user->markEmailAsVerified();
         return $this->successResponse([], 'Email verification successful');
     }
-    
+
     public function resendVerificationEmail() {
         if ($this->getAuthUser()->hasVerifiedEmail()) {
             return $this->errorResponse('Email Already Verified');
         }
-    
+
         $this->getAuthUser()->sendEmailVerificationNotification();
         return $this->successResponse([], 'Email verification link sent on your email');
     }
@@ -82,13 +82,13 @@ class AuthController extends Controller
     }
 
     public function changePassword(ChangePasswordRequest $request){
-        if (!password_verify($request->old_password, $this->getAuthUser()->password)) { 
+        if (!password_verify($request->old_password, $this->getAuthUser()->password)) {
             return $this->validationFailResponse([], 'Old password does not match');
-        } 
+        }
         $this->getAuthUser()->fill([
          'password' => Hash::make($request->new_password)
          ])->save();
-     
+
         return $this->successResponse([], 'Password Changed');
     }
 
@@ -104,7 +104,7 @@ class AuthController extends Controller
         if($request->has('profile')){
             $user->addMediaFromRequest('profile')->toMediaCollection('profile');
         }
-        return $this->successResponse($user);  
+        return $this->successResponse($user);
     }
 }
 

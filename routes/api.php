@@ -86,11 +86,18 @@ Route::group(['middleware' => 'auth:sanctum'], function (){
     });
 
     // carts
-    Route::group(['prefix' => 'cart'], function (){
+    Route::group(['prefix' => 'carts'], function (){
         Route::post('payment/paystack', 'CartController@paymentPaystack')->name('payment.paystack');
         // Route::post('withdraw', 'ProposalController@withdraw')->name('proposal.withdraw');
     });
-    
+
+    // chats
+    Route::group(['prefix' => 'chats'], function (){
+        Route::get('/', 'ChatController@index');
+        Route::get('messages/{receiver}', 'ChatController@fetchMessages');
+        Route::post('messages', 'ChatController@sendMessage');
+    });
+
 });
 
 Route::group(['prefix' => 'front'], function (){

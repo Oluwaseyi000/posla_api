@@ -2,58 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Models\Project;
 use App\Models\DealType;
+use App\Models\Proposal;
 use Illuminate\Support\Str;
+use App\Helpers\CartHandler;
 use Illuminate\Http\Request;
+use App\Helpers\OrderHandler;
 use App\Models\OrderTransaction;
 use App\Http\Requests\CartRequest;
-use App\Models\Project;
-use App\Models\Proposal;
 use Illuminate\Support\Facades\Http;
 
 class CartController extends Controller
 {
     protected $cart_type = '';
-    protected $amount_expected = '';
+    protected $amount_expected = null;
+    protected $amount_paid = null;
     protected $freelancer_id = null;
     protected $type_data = null;
 
-    const TYPE_DEAL = 'deal'; 
-    const TYPE_PROJECT = 'project'; 
-    const PAYMENT_APPROVED = 'approved'; 
-    const PAYMENT_UNDER_PAID = 'under_paid'; 
-    const PAYMENT_OVER_PAID = 'over_paid'; 
+    const TYPE_DEAL = 'deal';
+    const TYPE_PROJECT = 'project';
+    const PAYMENT_APPROVED = 'approved';
+    const PAYMENT_UNDER_PAID = 'under_paid';
+    const PAYMENT_OVER_PAID = 'over_paid';
 
     public function paymentPaystack(CartRequest $request){
-        try {
-            $paystack_verify_url = env('PAYSTACK_PAYMENT_URL').'/transaction/verify/'.$request->paystack_transaction_reference;
-            $response = Http::withToken(env('PAYSTACK_SECRET_KEY'))->get($paystack_verify_url);
-            $data = $response->json();
-            
-            if($response['data']['status'] != 'success'){
-                return $this->errorResponse('Payment verification failed');
-            }
-
-            $data = $data['data'];
-
-            $this->type($request->all());
-            $amountStatus = $this->verifyAmount($data['amount'], $request->all());
-            
-            $transaction = [
-                'ext_reference' => $data['reference'],
-                'transaction_channel' => 'paystack',
-                'transaction_metadata' => json_encode($data),
-                'amount_paid' => $data['amount'],
-                'currency' => $data['currency'],
-                'status' =>  $amountStatus,
-            ];
-
-            $this->createTransaction($transaction);
-            $this->provideService();
-
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+        $orderHandler = new CartHandler('paystack',  $request->toArray());
+        $order = $orderHandler->processPayment();
+        return $this->successResponse($order);
     }
 
     private function type(array $request){
@@ -76,7 +54,8 @@ class CartController extends Controller
     private function verifyAmount($paidAmount, $request){
         if($this->cart_type == $this::TYPE_DEAL){
             $dealType = DealType::find($request['deal_type_id']);
-            $this->amount_expected = $dealType->total;  
+            $this->amount_expected = $dealType->total;
+
         }elseif($this->cart_type == $this::TYPE_PROJECT){
             $proposal = Proposal::find($request['proposal_id']);
             $this->amount_expected = $proposal->deposit;
@@ -93,6 +72,27 @@ class CartController extends Controller
         return $status;
     }
 
+    private function createOrder(){
+        $data = [
+            'owner_id' => auth()->user()->id,
+            'freelancer_id' => $this->freelancer_id,
+            'type' => $this->cart_type,
+            'type_data' => $this->type_data,
+            'reference_number' => Str::random(10),
+            'price' =>  $this->amount_expected,
+            'service_charge' => 0,
+            'delivery_time' => now()->addDays(5),
+            'revision_remaining' => 3,
+            'quantity' => 1,
+            'total_price' => $this->amount_expected,
+            'total_paid' => $this->amount_paid,
+            'status' => Order::INPROGRESS
+        ];
+
+       return $order = Order::create($data);
+
+    }
+
     private function createTransaction(array $transaction){
         $generalData = [
             'owner_id' => auth()->user()->id,
@@ -101,6 +101,7 @@ class CartController extends Controller
             'amount_expected' => $this->amount_expected,
         ];
 
+        // $order = Order::create(array_merge($generalData, $transaction));
         OrderTransaction::create(array_merge($generalData, $transaction));
     }
 
@@ -114,7 +115,7 @@ class CartController extends Controller
             'price' => 0,
             'service_charge' => 0,
             'delivery_time' => 0,
-            'quantity' => 0,
+            'quantity' => 1,
             'total_price' => 0,
             'total_paid' => 0,
             // 'project_starts_on' => 0,

@@ -16,6 +16,10 @@ class Category extends Model
 
     protected $fillable = ['name', 'slug', 'position', 'description', 'status', 'parent_id'];
 
+    protected $casts = [
+        'subscribers' => 'array'
+    ];
+
     public function setNameAttribute($value){
         $this->attributes['name'] = ucwords($value);
     }

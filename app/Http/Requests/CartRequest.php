@@ -26,17 +26,17 @@ class CartRequest extends FormRequest
     {
         $validation = [
             'proposal_id' => [
-                'required_without:deal_type_id', 
+                'required_without:deal_type_id',
                 function ($attribute, $value, $fail) {
                     if ($value && $this->input('deal_type_id')) {
                         return $fail($attribute.' can only be filled when deal_type_id is empty.');
                     }
-                }, 
+                },
                 'exists:proposals,id'
             ],
 
             'deal_type_id' => [
-                'required_without:proposal_id', 
+                'required_without:proposal_id',
                 function ($attribute, $value, $fail) {
                     if ($value && $this->input('proposal_id')) {
                         return $fail($attribute.' can only be filled when proposal_id is empty.');
@@ -47,7 +47,7 @@ class CartRequest extends FormRequest
         ];
 
         if(Route::currentRouteName() == 'payment.paystack'){
-            $validation=  array_merge($validation, ['paystack_transaction_reference' => ['required']]);
+            $validation=  array_merge($validation, ['transaction_reference' => ['required']]);
         }
 
         return $validation;

@@ -3,18 +3,20 @@
 namespace App\Models;
 
 use App\Models\Category;
+use App\Models\Proposal;
 use App\Traits\UsesUuid;
 use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Project extends Model implements HasMedia
 {
     use HasFactory, UsesUuid, HasMediaTrait,Searchable;
-    
+
     const CLOSE = 0;
     const OPEN = 1;
     const INPROGRESS = 2;
@@ -35,7 +37,7 @@ class Project extends Model implements HasMedia
             $this::COMPLETED => 'completed',
             $this::ABANDONED => 'abandon',
         ];
-    } 
+    }
 
 
     public function setTitleAttribute($value){
@@ -95,7 +97,7 @@ class Project extends Model implements HasMedia
         $data = [];
         foreach ($this->getMedia() as $media) {
             $data[] =  $media->getFullUrl();
-            
+
         }
         return $data;
     }
@@ -105,7 +107,7 @@ class Project extends Model implements HasMedia
         // return $this->owner->id;
         // return $medias = $this->owner();
         // return $medias->getFirstMediaUrl();
-      
+
     }
 
     public function getIsFavouriteAttribute(){
@@ -125,6 +127,16 @@ class Project extends Model implements HasMedia
 
     public function getTotalAttribute(){
         return $this->price + $this->serviceFeeAndVat;
+    }
+
+    /**
+     * Get all of the proposals for the Project
+     *
+     * @return \Illumin            ate\Database\Eloquent\Relations\HasMany
+     */
+    public function proposals(): HasMany
+    {
+        return $this->hasMany(Proposal::class);
     }
 
 

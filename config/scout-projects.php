@@ -104,7 +104,7 @@ return [
     |
     */
 
-    'unretrievableAttributes' => null,
+    'unretrievableAttributes' => ['action'],
 
     /*
     |--------------------------------------------------------------------------

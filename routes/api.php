@@ -66,11 +66,23 @@ Route::group(['middleware' => 'auth:sanctum'], function (){
         Route::get('deals', 'AccountController@myDeals');
         Route::get('projects', 'AccountController@myProjects');
         Route::get('profile', 'AccountController@myProfile');
-        Route::get('orders', 'AccountController@myProfile');
+        Route::get('orders', 'AccountController@myOrders');
+        Route::get('orders/owner', 'AccountController@myOrdersOwner');
         Route::get('favourites', 'AccountController@myFavourites');
         Route::get('project-bids', 'AccountController@myProjectBids');
         Route::get('dashboard', 'AccountController@dashboard');
         Route::post('settings/vacation', 'AccountController@vacation');
+        Route::get('earnings-withdrawals', 'AccountController@earningsWithdrawal');
+        Route::group(['prefix' => 'notifications'], function (){
+            Route::get('', 'NotificationController@userNotifications');
+            Route::post('/mark-as-read/{notification}', 'NotificationController@markAsRead');
+            Route::post('/mark-as-unread/{notification}', 'NotificationController@markAsUnread');
+            Route::delete('/delete/{notification}', 'NotificationController@deleteNotification');
+            Route::get('/unread-count', 'NotificationController@totalUnread');
+            Route::post('subscribe-category', 'NotificationController@subscribeCategory')->name('category.subscribe');
+            Route::post('unsubscribe-category', 'NotificationController@unsubscribeCategory')->name('category.unsubscribe');
+            Route::get('subscribable-categories', 'NotificationController@subscribableCategory');
+        });
     });
 
       // favourites
@@ -83,6 +95,10 @@ Route::group(['middleware' => 'auth:sanctum'], function (){
     Route::group(['prefix' => 'proposals'], function (){
         Route::post('bid', 'ProposalController@bid')->name('proposal.bid');
         Route::post('withdraw', 'ProposalController@withdraw')->name('proposal.withdraw');
+        Route::get('{project}', 'ProposalController@projectProposals')->name('project.proposals');
+        Route::post('{proposal}/accept', 'ProposalController@acceptProposal')->name('proposals.accept');
+        Route::post('{project}/shortlist', 'ProposalController@shortlistProposal')->name('proposals.shortlist');
+        Route::get('{proposal}/shortlisted', 'ProposalController@shortlistedProposals')->name('proposals.shortlisted');
     });
 
     // carts
@@ -98,11 +114,25 @@ Route::group(['middleware' => 'auth:sanctum'], function (){
         Route::post('messages', 'ChatController@sendMessage');
     });
 
+    // transactions
+
+    // Route::group(['prefix' => 'trna'], function (){
+    //     Route::get('/', 'ChatController@index');
+    //     Route::get('messages/{receiver}', 'ChatController@fetchMessages');
+    //     Route::post('messages', 'ChatController@sendMessage');
+    // });
+
+    // orders
+    Route::group(['prefix' => 'orders'], function (){
+        Route::get('/{order}', 'OrderController@orderDetail');
+        Route::post('/{order}/requirements', 'OrderController@orderRequirements');
+    });
+
 });
 
 Route::group(['prefix' => 'front'], function (){
     Route::get('projects', 'FrontController@allProjects');
-    Route::get('projects/{project}', 'FrontController@singleProject');
+    Route::get('projects/{project}', 'FrontController@singleProject')->name('project.details');
     Route::get('deals', 'FrontController@allDeals');
     Route::get('deals/{deal}', 'FrontController@singleDeal');
     Route::get('categories/{category}/projects', 'FrontController@categoryProjects');

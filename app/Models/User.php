@@ -3,21 +3,22 @@
 namespace App\Models;
 
 use App\Models\Deal;
+use App\Models\Order;
 use App\Traits\UsesUuid;
 use App\Models\DealFavourite;
 use Laravel\Scout\Searchable;
+use Ramsey\Uuid\Type\Integer;
+// use App\Notifications\VerifyEmailNotification;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
-// use App\Notifications\VerifyEmailNotification;
+// use App\Notifications\SendPasswordResetNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use App\Models\CategoryNotificationSubscription;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-// use App\Notifications\SendPasswordResetNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
-
-
 
 class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
@@ -130,5 +131,46 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     public function messages(): HasMany
     {
         return $this->hasMany(ChatMessage::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'freelancer_id');
+    }
+
+    public function ordersOwner(): HasMany
+    {
+        return $this->hasMany(Order::class, 'owner_id');
+    }
+
+    public function earnings(): HasMany
+    {
+        return $this->hasMany(OrderTransaction::class, 'freelancer_id');
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(OrderTransaction::class, 'owner_id');
+    }
+
+    public function totalEarnings()
+    {
+        return $this->hasMany(OrderTransaction::class, 'freelancer_id')->sum('amount_expected');
+    }
+
+    /**
+     * Get all of the categorySubscription for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function categoryNotificationSubscription(): HasMany
+    {
+        return $this->hasMany(CategoryNotificationSubscription::class);
+    }
+
+
+    public function categoryNotificationSubscriptionId()
+    {
+        return $this->categoryNotificationSubscription->pluck('category_id');
     }
 }

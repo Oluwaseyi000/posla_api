@@ -46,6 +46,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'last_seen' => 'datetime',
         'dob' => 'date',
         'languages' => 'array'
     ];

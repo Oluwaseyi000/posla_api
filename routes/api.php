@@ -19,7 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['prefix' => 'auth'], function(){
+Route::group(['prefix' => 'auth', 'middleware' => ['update.last_seen']], function(){
     Route::post('signup', 'AuthController@signup');
     Route::post('signin', 'AuthController@signin');
     Route::post('forgot-password', 'AuthController@forgotPassword');
@@ -32,7 +32,7 @@ Route::group(['prefix' => 'auth'], function(){
     });
 });
 
-Route::group(['middleware' => 'auth:sanctum'], function (){
+Route::group(['middleware' =>['auth:sanctum', 'update.last_seen']], function (){
     Route::group(['prefix' => 'projects'], function (){
         Route::group(['prefix' => 'create'], function (){
             Route::post('stage-two-info', 'ProjectController@stageTwoInfo')->name('create-project-stage-two-info');

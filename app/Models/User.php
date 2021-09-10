@@ -25,9 +25,10 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     use HasFactory, Notifiable, Searchable;
     use UsesUuid, HasMediaTrait, HasApiTokens;
 
-    const ACTIVE = 1;
     const DISABLE = 0;
+    const ACTIVE = 1;
     const VACATION = 2;
+    const SUSPENDED = 3;
 
     protected $fillable = [
         'name', 'username', 'phone', 'email', 'password', 'email_verified_at',

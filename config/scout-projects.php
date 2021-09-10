@@ -56,7 +56,7 @@ return [
     |
     */
 
-    'removeStopWords' => null,
+    'removeStopWords' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -72,7 +72,7 @@ return [
     |
     */
 
-    'disableTypoToleranceOnAttributes' => null,
+    'disableTypoToleranceOnAttributes' => ['budget'],
 
     /*
     |--------------------------------------------------------------------------

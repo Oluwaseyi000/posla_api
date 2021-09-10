@@ -16,10 +16,13 @@ class Deal extends Model implements HasMedia
 {
     use HasFactory, UsesUuid, HasMediaTrait, Searchable;
 
+    const ENABLED = 1;
+    const DISABLED = 0;
+
     protected $fillable = ['user_id', 'category_id', 'subcategory_id', 'title','description','tags', 'boosted','status', 'action'];
-    
+
     protected $hidden = ['media'];
-    
+
     protected $appends = ['deal_images', 'is_favourite'];
     /**
      * Get all of the types for the Deal
@@ -29,19 +32,19 @@ class Deal extends Model implements HasMedia
     public function types(): HasMany
     {
         return $this->hasMany(DealType::class);
-    
+
     }
 
-    public function active_types() 
+    public function active_types()
     {
         return $this->types->where('status', true);
     }
-    
+
     public function typeBasic(): HasOne
     {
         return $this->hasOne(DealType::class)->where('type', 'basic');
     }
-    
+
     public function typeStandard(): HasOne
     {
         return $this->hasOne(DealType::class)->where('type', 'standard');
@@ -106,14 +109,14 @@ class Deal extends Model implements HasMedia
 
    public function getIsNewAttribute(){
     return $this->created_at > now()->subDays(7);
-       
+
    }
 
     public function toSearchableArray(){
         $array = $this;
 
         // Applies Scout Extended default transformations:
-        $array = $this->transform($array);
+        $array = $this->toArray();
 
         // Add an extra attribute:
         $array['owner'] = $this->owner->name;
@@ -128,7 +131,7 @@ class Deal extends Model implements HasMedia
         $data = [];
         foreach ($this->getMedia() as $media) {
             $data[] =  $media->getFullUrl();
-            
+
         }
         return $data;
     }

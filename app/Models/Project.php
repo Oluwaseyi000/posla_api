@@ -17,17 +17,23 @@ class Project extends Model implements HasMedia
 {
     use HasFactory, UsesUuid, HasMediaTrait,Searchable;
 
+    // const ENABLED = 1;
+    // const DISABLED = 0;
+
     const CLOSE = 0;
     const OPEN = 1;
     const INPROGRESS = 2;
     const COMPLETED = 3;
     const ABANDONED = 4;
+    const IN_CREATION_MODE = 5;
+    const IN_EDITING_MODE = 6;
 
 
     protected $guarded = [];
     protected $cast = ['active_until' => 'timestamp'];
     protected $hidden = ['media', 'category'];
-    protected $appends = [ 'status_display','project_images', 'UserProfileImage' ,'is_favourite'];
+//    protected $appends = [ 'status_display','project_images', 'UserProfileImage' ,'is_favourite'];
+    protected $appends = [ 'UserProfileImage' ,'is_favourite', 'project_images', 'status_display'];
 
     protected function statusDisplay(){
         return  [
@@ -82,7 +88,7 @@ class Project extends Model implements HasMedia
         $array = $this;
 
         // Applies Scout Extended default transformations:
-        $array = $this->transform($array);
+        $array = $this->toArray();
 
         // Add an extra attribute:
         $array['owner'] = $this->owner->name;

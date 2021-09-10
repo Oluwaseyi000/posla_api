@@ -139,6 +139,14 @@ Route::group(['prefix' => 'front'], function (){
     Route::get('categories/{category}/deals', 'FrontController@categoryProjects');
 });
 
+// Search
+Route::group(['prefix' => 'search'], function(){
+    Route::get('/', 'SearchController@all');
+    Route::get('/projects', 'SearchController@projects');
+    Route::get('/deals', 'SearchController@deals');
+    Route::get('/freelancers', 'SearchController@users');
+});
+
 
 
 Route::get('category/main-categories', 'HelperController@mainCategories');

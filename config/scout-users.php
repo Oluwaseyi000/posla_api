@@ -72,7 +72,7 @@ return [
     |
     */
 
-    'disableTypoToleranceOnAttributes' => ['pid'],
+    'disableTypoToleranceOnAttributes' => ['pid', 'username'],
 
     /*
     |--------------------------------------------------------------------------

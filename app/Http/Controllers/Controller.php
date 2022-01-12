@@ -7,9 +7,12 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 
+
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    const PER_PAGE =  10;
 
     public function successResponse($data = null, $comment = null, $message = 'successful', $status = true){
         $response = [
@@ -38,7 +41,11 @@ class Controller extends BaseController
     }
 
 
-    public function getAuthUser(){
-        return auth()->user();
+    public function getAuthUser($guard = null){
+        return auth($guard)->user();
+    }
+
+    public function getAdminAuth(){
+        return auth('admin')->user();
     }
 }

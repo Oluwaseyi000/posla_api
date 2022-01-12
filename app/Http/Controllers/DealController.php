@@ -9,11 +9,11 @@ use App\Http\Requests\DealRequest;
 class DealController extends Controller
 {
     public function stageTwoInfo(DealRequest $request){
-        $data = $request->validated();    
+        $data = $request->validated();
         unset($data['pictures']);
         $data['action'] = 'creating';
         $data['user_id'] = $this->getAuthUser()->id;
-       
+
 
         $deal = Deal::create($data);
         $deal->addMultipleMediaFromRequest(['pictures'])
@@ -34,15 +34,16 @@ class DealController extends Controller
     }
 
     public function stageFivePublish(DealRequest $request, Deal $deal){
+        // same for dit and create
         $deal->action = 'completed';
         $deal->save();
         return $this->successResponse($deal, 'Deal creation completed');
     }
 
     public function stageTwoInfoEdit(DealRequest $request, Deal $deal){
-        $data = $request->validated();    
+        $data = $request->validated();
         unset($data['pictures']);
-       
+
         $deal->update($data);
         if($request->has('pictures')){
             $deal->addMultipleMediaFromRequest(['pictures'])

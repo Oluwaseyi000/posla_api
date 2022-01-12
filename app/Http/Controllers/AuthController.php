@@ -25,7 +25,7 @@ class AuthController extends Controller
 
             $user['token'] = $user->createToken('auth_token')->plainTextToken;
             DB::commit();
-            $this->getAuthUser()->sendEmailVerificationNotification();
+            $user->sendEmailVerificationNotification();
             return $this->successResponse($user);
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -33,7 +33,7 @@ class AuthController extends Controller
         }
     }
 
-    public function signin(SigninRequest $request){
+    public function login(SigninRequest $request){
         if (!auth()->attempt($request->validated())) {
             return $this->validationFailResponse('Invalid Login Credentials');
         }
@@ -42,7 +42,7 @@ class AuthController extends Controller
     }
 
     public function verifyEmail(User $user, Request $request) {
-        return 1;
+
         if (!$request->hasValidSignature()) {
             return $this->errorResponse('Invalid/Expired url provided');
         }

@@ -53,15 +53,19 @@ class AccountController extends Controller
 
     public function vacation(){
         $user = $this->getAuthUser();
+
         if($user->status == User::ACTIVE){
             $user->status = User::VACATION;
             $message = 'Vacation mode activated, enjoy your vacation';
-
+            $user->save();
         }elseif($user->status == User::VACATION){
             $user->status = User::ACTIVE;
             $message = 'Vacation mode deactivated';
+             $user->save();
+        }elseif($user->status == User::DISABLE){
+            $message = 'Cant set account to vacation, Your account is disabled';
         }
-        $user->save();
+
         return $this->successResponse(['status' => $user->status], 'same endpoint for vacation and off-vacation', $message);
     }
 

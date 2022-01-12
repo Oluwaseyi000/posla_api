@@ -11,33 +11,32 @@ use Illuminate\Support\Facades\DB;
 class FrontController extends Controller
 {
     public function allProjects(){
-        $projects = Project::from('projects as project' )
-            ->leftJoin('categories as category', 'category.id', '=', 'project.category_id')
-            ->select(['project.id', 'title', 'budget', 'project.description', 'tags', 'boosted', 'category.id as category_id', 'category.name as category_name', 'project.created_at'])
-            ->get()
-            ->groupBy('category.name');
+       $projects = DB::table('projects')
+            ->leftJoin('categories as category', 'category.id', '=', 'projects.category_id')
+            ->select([ 'projects.id', 'title', 'budget', 'projects.description', 'tags', 'boosted', 'category.id as category_id', 'category.name as category_name', 'projects.created_at'])
+            ->paginate(request()->per_page ?? $this::PER_PAGE);
         return $this->successResponse($projects, 'Projects are grouped by category');
     }
 
     public function singleProject(Project $project){
-        $project = Project::from('projects as project' )
-            ->where('project.id', $project->id)
-            ->leftJoin('categories as category', 'category.id', '=', 'project.category_id')
-            ->leftJoin('categories as subcategory', 'subcategory.id', '=', 'project.subcategory_id')
-            ->leftJoin('users as user', 'user.id', '=', 'project.user_id')
-            
+        $project = Project::
+            where('projects.id', $project->id)->
+            leftJoin('categories as category', 'category.id', '=', 'projects.category_id')
+            ->leftJoin('categories as subcategory', 'subcategory.id', '=', 'projects.subcategory_id')
+            ->leftJoin('users as user', 'user.id', '=', 'projects.user_id')
+
             ->select([
                 // 'media.*',
-                'project.id', 'title', 'budget', 'project.description', 'tags', 'boosted', 'project.status', 'project.created_at',
+                'projects.id', 'title', 'budget', 'projects.description', 'tags', 'boosted', 'projects.status', 'projects.created_at',
                 'category.id as category_id', 'category.name as category_name',
                 'subcategory.id as subcategory_id', 'subcategory.name as subcategory_name',
-                'user.name as user_name', 'user.id as user_id', 'user.created_at as member_since', 'user.gender as user_gender', 
-                // 'user.description as user_description' 
+                'user.name as user_name', 'user.id as user_id', 'user.created_at as member_since', 'user.gender as user_gender',
+                // 'user.description as user_description'
                 // ,
-                    DB::raw('(select count(*) FROM proposals where proposals.project_id = project.id) as proposal_count'),
+                    DB::raw('(select count(*) FROM proposals where proposals.project_id = projects.id) as proposal_count'),
                 ])
             ->get();
-            
+
 
         return $this->successResponse($project);
     }
@@ -48,51 +47,46 @@ class FrontController extends Controller
     }
 
     public function allDeals(){
-        $deals = Deal::from('deals as deal')
-            ->leftJoin('users as user', 'user.id', '=', 'deal.user_id')
-            ->leftJoin('categories as category', 'category.id', '=', 'deal.category_id')
-            ->select(['deal.id', 'deal.description', 'tags', 'boosted', 'category.id as category_id', 'category.name as category_name', 'user.name as user_name', 'deal.created_at'])
-            ->get()
-            ->groupBy('category.name');
+        $deals = DB::table('deals')->
+            leftJoin('users as user', 'user.id', '=', 'deals.user_id')
+            ->leftJoin('categories as category', 'category.id', '=', 'deals.category_id')
+            ->select(['deals.id', 'deals.description', 'tags', 'boosted', 'category.id as category_id', 'category.name as category_name', 'user.name as user_name', 'deals.created_at'])
+            ->paginate(request()->per_page ?? $this::PER_PAGE);
         return $this->successResponse($deals, 'Deals are grouped by category');
     }
 
     public function singleDeal(Deal $deal){
-        $data = Deal::from('deals as deal' )
-            ->with(['types'])
-            ->where('deal.id', $deal->id)
-            ->leftJoin('categories as category', 'category.id', '=', 'deal.category_id')
-            ->leftJoin('categories as subcategory', 'subcategory.id', '=', 'deal.subcategory_id')
-            ->leftJoin('users as user', 'user.id', '=', 'deal.user_id')
+        $data = Deal::with(['types'])
+            ->where('deals.id', $deal->id)
+            ->leftJoin('categories as category', 'category.id', '=', 'deals.category_id')
+            ->leftJoin('categories as subcategory', 'subcategory.id', '=', 'deals.subcategory_id')
+            ->leftJoin('users as user', 'user.id', '=', 'deals.user_id')
             ->select([
-                'deal.id', 'title', 'deal.description', 'tags', 'boosted', 'deal.created_at',
+                'deals.id', 'title', 'deals.description', 'tags', 'boosted', 'deals.created_at',
                 'category.id as category_id', 'category.name as category_name',
                 'subcategory.id as subcategory_id', 'subcategory.name as subcategory_name',
-                'user.name as user_name', 'user.id as user_id', 'user.created_at as member_since', 'user.gender as user_gender', 
+                'user.name as user_name', 'user.id as user_id', 'user.created_at as member_since', 'user.gender as user_gender',
                 ])
             ->get();
-            $data['seller_other_deals'] =  $deal->sellerOtherDeals();
-            $data['category_other_deals'] =  $deal->categoryOtherDeals();
+            // $data['seller_other_deals'] =  $deal->sellerOtherDeals();
+            // $data['category_other_deals'] =  $deal->categoryOtherDeals();
 
         return $this->successResponse($data);
     }
 
     public function categoryProjects(Category $category){
-        $category = Category::from('categories as category' )
-            ->where('category.id', $category->id)
-            ->with('projects', 'children')->get();
+        $category = Category::where('categories.id', $category->id)->with('projects', 'children')->get();
 
-        return $this->successResponse($category);  
-    
+        return $this->successResponse($category);
+
     }
     public function categoryDeals(Category $category){
-        $category = Category::from('categories as category' )
-            ->where('category.id', $category->id)
+        $category = Category::where('categories.id', $category->id)
             ->with('deals', 'children')->get();
 
-        return $this->successResponse($category);  
+        return $this->successResponse($category);
     }
-    
+
 
     public function featuredDeals(){
         // $feature_projects = Project::where(['boosted' =>true, 'status'=> true])->inRandomOrder()->limit(2)->get();

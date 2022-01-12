@@ -53,7 +53,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     ];
 
     public function setSkillsetsAttribute($skillset){
-        $this->attributes['skillsets'] = implode($skillset, ',');
+        $this->attributes['skillsets'] = implode(',', $skillset);
     }
 
     public function getSkillsetsAttribute($skillset){

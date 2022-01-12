@@ -20,7 +20,6 @@ class UpdateLastSeenMiddleware
         $response = $next($request);
 
         if(auth()->check() && auth()->user()->last_seen < now()->subMinute(15)){
-            dd(auth()->user()->last_seen);
             User::where('id', auth()->user()->id)->update(['last_seen' => now()]);
         }
 

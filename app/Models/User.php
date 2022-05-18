@@ -53,11 +53,19 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     ];
 
     public function setSkillsetsAttribute($skillset){
-        $this->attributes['skillsets'] = implode(',', $skillset);
+        try {
+            $this->attributes['skillsets'] = implode(',', $skillset);
+        } catch (\Throwable $th) {
+            $this->attributes['skillsets'] = implode($skillset, ',');
+        }
     }
 
     public function getSkillsetsAttribute($skillset){
-       return empty($skillset) ? [] : explode(',', $skillset);
+        try {
+            return empty($skillset) ? [] : explode(',', $skillset);
+        } catch (\Throwable $th) {
+            return empty($skillset) ? [] : explode($skillset, ',');
+        }
     }
 
     public function setLanguagesAttribute($languages){

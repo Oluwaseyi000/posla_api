@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Throwable;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -47,6 +48,12 @@ class Handler extends ExceptionHandler
                 'status' => false,
                 'message' => 'Not found'
             ], 404);
+        }
+        elseif($exception instanceof AuthenticationException){
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthenticated User'
+            ], 401);
         }
         return parent::render($request, $exception);
     }

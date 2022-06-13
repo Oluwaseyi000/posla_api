@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Traits\UsesUuid;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\HasApiTokens;
 
-class Admin
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class Admin extends Authenticatable implements MustVerifyEmail
 // extends Authenticatable
 {
     use HasFactory, UsesUuid, Notifiable, HasApiTokens;

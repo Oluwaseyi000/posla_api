@@ -5,11 +5,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::group(['namespace' => 'Admin'], function(){
-    Route::post('signup', 'AdminAuthController@signup');
-    Route::post('login', 'AdminAuthController@login');
+    // Route::post('signup', 'AdminAuthController@signup');
+    // Route::post('login', 'AdminAuthController@login');
 
     Route::group(['middleware' => ['auth:sanctum', 'admin.auth']], function(){
-        Route::post('logout', 'AdminAuthController@logout');
+        // Route::post('logout', 'AdminAuthController@logout');
 
         //settings
         Route::group(['prefix' => 'settings', 'namespace' => 'settings'], function(){

@@ -22,6 +22,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'auth', 'middleware' => ['update.last_seen']], function(){
     Route::post('signup', 'AuthController@signup');
     Route::post('login', 'AuthController@login');
+    Route::get('unauthenticated', 'AuthController@unauthenticated')->name('unauthenticated');
     Route::post('forgot-password', 'AuthController@forgotPassword');
     Route::post('reset-password', 'AuthController@resetPassword');
     Route::group(['middleware' => 'auth:sanctum'], function(){

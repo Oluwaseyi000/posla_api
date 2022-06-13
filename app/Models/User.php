@@ -29,6 +29,9 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     const ACTIVE = 1;
     const VACATION = 2;
     const SUSPENDED = 3;
+    const ROLE_TYPE_USER = 1;
+    const ROLE_TYPE_ADMIN = 2;
+    const ROLE_TYPE_SUPERADMIN = 3;
 
     protected $fillable = [
         'name', 'username', 'phone', 'email', 'password', 'email_verified_at',

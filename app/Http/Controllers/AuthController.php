@@ -24,7 +24,7 @@ class AuthController extends Controller
             $user = User::create($data);
 
             $user['token'] = $user->createToken('auth_token')->plainTextToken;
-            // $user->sendEmailVerificationNotification();
+            $user->sendEmailVerificationNotification();
             DB::commit();
             auth()->login($user);
             return $this->successResponse($user);
@@ -43,7 +43,7 @@ class AuthController extends Controller
     }
 
     public function verifyEmail(User $user, Request $request) {
-return 3;
+
         if (!$request->hasValidSignature()) {
             return $this->errorResponse('Invalid/Expired url provided');
         }

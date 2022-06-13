@@ -21,7 +21,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'auth', 'middleware' => ['update.last_seen']], function(){
     Route::post('signup', 'AuthController@signup');
-    Route::post('signin', 'AuthController@signin');
+    Route::post('login', 'AuthController@login');
     Route::post('forgot-password', 'AuthController@forgotPassword');
     Route::post('reset-password', 'AuthController@resetPassword');
     Route::group(['middleware' => 'auth:sanctum'], function(){
@@ -82,6 +82,7 @@ Route::group(['middleware' =>['auth:sanctum', 'update.last_seen']], function (){
             Route::post('subscribe-category', 'NotificationController@subscribeCategory')->name('category.subscribe');
             Route::post('unsubscribe-category', 'NotificationController@unsubscribeCategory')->name('category.unsubscribe');
             Route::get('subscribable-categories', 'NotificationController@subscribableCategory');
+            Route::get('subscribed-categories', 'NotificationController@subscribedCategory');
         });
     });
 
@@ -158,4 +159,11 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     $request->fulfill();
     return redirect('/home');
 })->middleware(['auth', 'signed'])->name('verification.verify');
+
+// Route::get('email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+//     return $request->all();
+//     $request->fulfill();
+//     // return redirect('/home');
+// })->middleware(['auth', 'signed'])->name('verification.verify');
+
 

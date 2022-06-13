@@ -45,6 +45,10 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\AcceptJsonMiddleware::class
         ],
+
+        // 'admin' => [
+
+        // ]
     ];
 
     /**
@@ -65,5 +69,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'update.last_seen' => \App\Http\Middleware\UpdateLastSeenMiddleware::class,
+        'admin.auth' => \App\Http\Middleware\Admin\IsAdminMiddleware::class,
     ];
 }

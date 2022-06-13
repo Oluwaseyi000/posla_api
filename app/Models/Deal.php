@@ -18,6 +18,7 @@ class Deal extends Model implements HasMedia
 
     const ENABLED = 1;
     const DISABLED = 0;
+    const DISABLE_BY_ADMIN = 3;
 
     protected $fillable = ['user_id', 'category_id', 'subcategory_id', 'title','description','tags', 'boosted','status', 'action'];
 
@@ -31,7 +32,7 @@ class Deal extends Model implements HasMedia
      */
     public function types(): HasMany
     {
-        return $this->hasMany(DealType::class);
+        return $this->hasMany(DealType::class)->orderBy('position');
 
     }
 
@@ -100,11 +101,11 @@ class Deal extends Model implements HasMedia
    }
 
    public function getTagsAttribute($tags){
-       return empty($tags) ? []: explode(',', $tags);
+       return empty($tags) ? [] : explode(',', $tags);
    }
 
    public function getTagsList(){
-       return implode($this->tags, ',');
+       return implode('', $this->tags);
    }
 
    public function getIsNewAttribute(){
